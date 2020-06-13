@@ -109,12 +109,17 @@ const App = () => {
 
   return (
     <div className="App">
-      {/* <Container component="main" maxWidth="xs"> */}
-      <img src="/icons/512x512.png" className="App-logo" alt="logo" />
-      <Counter />
-      <TwitterShare />
-
-    </div >
+      <div className="App-inner">
+        {/* <Container component="main" maxWidth="xs"> */}
+        <img src="/icons/512x512.png" className="App-logo" alt="logo" />
+        <Counter />
+        <TwitterShare />
+      </div >
+      {/* <div className="burner"> */}
+      {/* <img src="/burner.gif" classNmae="burner"/> */}
+      <img src="/burner.gif" className="burner"/>
+      {/* </div> */}
+    </div>
   );
 };
 
