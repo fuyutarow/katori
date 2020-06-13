@@ -38,9 +38,16 @@ const oscillators: Array<OscillatorNode> = freqs.map(freq => {
   return oscillator;
 });
 
+enum Playing {
+  High,
+  Low,
+  None,
+}
+
 const Counter: React.FC = () => {
   const [firstTapLow, setFirstTapLow] = useState(true);
   const [firstTapHigh, setFirstTapHigh] = useState(true);
+  const [playing, setPlaying] = useState(Playing.None);
   const [audio, setAudio] = useState<OscillatorNode>(carrier);
 
   const playLow = () => {
@@ -82,30 +89,35 @@ const Counter: React.FC = () => {
   return (
     <div>
       <Button
-        variant="outlined"
         disableElevation
         onClick={() => {
           playLow();
+          setPlaying(Playing.Low);
         }}
+        variant={playing === Playing.Low ? 'contained' : 'outlined'}
+        disabled={playing === Playing.Low}
       >
         蚊誘引
       </Button>
       <Button
-        variant="outlined"
         disableElevation
         onClick={() => {
           playHigh();
+          setPlaying(Playing.High);
         }}
+        variant={playing === Playing.High ? 'contained' : 'outlined'}
+        disabled={playing === Playing.High}
       >
         蚊忌避
       </Button>
       <Button
-        variant="outlined"
         disableElevation
         onClick={() => {
           pauseLow();
           pauseHigh();
+          setPlaying(Playing.None);
         }}
+        variant="outlined"
       >
         音停止
       </Button>
