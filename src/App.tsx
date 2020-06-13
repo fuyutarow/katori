@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import {
   Container,
@@ -13,6 +13,10 @@ import {
 import './App.css';
 import { findAllInRenderedTree } from 'react-dom/test-utils';
 
+const Freq = {
+  High: 15000,
+};
+
 // NOTE: for safari
 // @ts-ignore
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -22,67 +26,98 @@ const carrier = audioContext.createOscillator();
 carrier.type = 'sine';
 carrier.frequency.value = 220;
 
-const carrierGain = audioContext.createGain();
-carrierGain.gain.value = .6;
+const freqs = [
+  462, 466, // ネッタイシマカ, ヒトスジシマカ
+  640, 963, // ヒトスジシマカ
+];
 
-carrier.connect(carrierGain);
-carrierGain.connect(audioContext.destination);
+const oscillators: Array<OscillatorNode> = freqs.map(freq => {
+  const oscillator = audioContext.createOscillator();
+  oscillator.type = 'sine';
+  oscillator.frequency.value = freq;
+  return oscillator;
+});
 
-const Counter = () => {
+enum Playing {
+  High,
+  Low,
+  None,
+}
 
-  const [firstTap, setFirstTap] = useState(true);
+const Counter: React.FC = () => {
+  const [firstTapLow, setFirstTapLow] = useState(true);
+  const [firstTapHigh, setFirstTapHigh] = useState(true);
+  const [playing, setPlaying] = useState(Playing.None);
   const [audio, setAudio] = useState<OscillatorNode>(carrier);
 
-  const onAudio = () => {
-    if (firstTap) {
+  const playLow = () => {
+    pauseHigh();
+    const currentTime = audioContext.currentTime;
+    if (firstTapLow) {
+      oscillators.forEach(oscillator => {
+        oscillator.start(currentTime);
+      });
+      setFirstTapLow(false);
+    }
+    oscillators.forEach(oscillator => {
+      oscillator.connect(audioContext.destination);
+    });
+  };
+
+  const pauseLow = () => {
+    oscillators.forEach(oscillator => {
+      oscillator.disconnect();
+    });
+  };
+
+  const playHigh = () => {
+    pauseLow();
+    carrier.frequency.value = Freq.High;
+    if (firstTapHigh) {
       audio.start(0);
       audio.disconnect();
       setAudio(audio);
-      setFirstTap(false);
+      setFirstTapHigh(false);
     }
     audio.connect(audioContext.destination);
   };
 
-  const offAudio = () => {
+  const pauseHigh = () => {
     carrier.disconnect();
-  };
-
-  const setHigh = () => {
-    carrier.frequency.value = 15000;
-  };
-
-  const setLow = () => {
-    carrier.frequency.value = 220;
   };
 
   return (
     <div>
       <Button
-        variant="outlined"
         disableElevation
         onClick={() => {
-          onAudio();
-          setLow();
+          playLow();
+          setPlaying(Playing.Low);
         }}
+        variant={playing === Playing.Low ? 'contained' : 'outlined'}
+        disabled={playing === Playing.Low}
       >
         蚊誘引
       </Button>
       <Button
-        variant="outlined"
         disableElevation
         onClick={() => {
-          onAudio();
-          setHigh();
+          playHigh();
+          setPlaying(Playing.High);
         }}
+        variant={playing === Playing.High ? 'contained' : 'outlined'}
+        disabled={playing === Playing.High}
       >
         蚊忌避
       </Button>
       <Button
-        variant="outlined"
         disableElevation
         onClick={() => {
-          offAudio();
+          pauseLow();
+          pauseHigh();
+          setPlaying(Playing.None);
         }}
+        variant="outlined"
       >
         音停止
       </Button>
