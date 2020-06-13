@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import {
   Container,
@@ -13,27 +13,71 @@ import {
 import './App.css';
 import { findAllInRenderedTree } from 'react-dom/test-utils';
 
+const Freq = {
+  High: 15000,
+};
+
 // NOTE: for safari
 // @ts-ignore
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 
+const createSound = (func: any, duration: any) => {
+  const sampleRate = audioContext.sampleRate; // サンプリングレート
+  const dt = 1 / sampleRate; // 時間刻み
+  const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
+  const data = buffer.getChannelData(0); // バッファ配列の生成
+  for (let i = 0; i < data.length; i++) {
+    data[i] = func(dt * i);
+  }
+  return buffer;
+};
+
+const source = audioContext.createBufferSource();
+
+const playSound = (buffer: any) => {
+  source.buffer = buffer;
+
+  // Destination
+  source.connect(audioContext.destination);
+
+  // Sourceの再生
+  source.start(0);
+};
+
+const analyser = audioContext.createAnalyser();
+
 const carrier = audioContext.createOscillator();
 carrier.type = 'sine';
 carrier.frequency.value = 220;
 
-const carrierGain = audioContext.createGain();
-carrierGain.gain.value = .6;
-
-carrier.connect(carrierGain);
-carrierGain.connect(audioContext.destination);
-
-const Counter = () => {
-
+const Counter: React.FC = () => {
   const [firstTap, setFirstTap] = useState(true);
   const [audio, setAudio] = useState<OscillatorNode>(carrier);
 
-  const onAudio = () => {
+  const offAudio = () => {
+    carrier.disconnect();
+  };
+
+  const playLow = () => {
+    const freqs = [
+      462, 466, // ネッタイシマカ, ヒトスジシマカ
+      640, 963, // ヒトスジシマカ
+    ];
+
+    const currentTime = audioContext.currentTime;
+    freqs.forEach(freq => {
+      const oscillator = audioContext.createOscillator();
+      oscillator.type = 'sine';
+      oscillator.frequency.value = freq;
+      oscillator.start(currentTime);
+      oscillator.connect(audioContext.destination);
+    });
+
+  };
+
+  const playHigh = () => {
+    carrier.frequency.value = Freq.High;
     if (firstTap) {
       audio.start(0);
       audio.disconnect();
@@ -43,26 +87,13 @@ const Counter = () => {
     audio.connect(audioContext.destination);
   };
 
-  const offAudio = () => {
-    carrier.disconnect();
-  };
-
-  const setHigh = () => {
-    carrier.frequency.value = 15000;
-  };
-
-  const setLow = () => {
-    carrier.frequency.value = 220;
-  };
-
   return (
     <div>
       <Button
         variant="outlined"
         disableElevation
         onClick={() => {
-          onAudio();
-          setLow();
+          playLow();
         }}
       >
         蚊誘引
@@ -71,8 +102,7 @@ const Counter = () => {
         variant="outlined"
         disableElevation
         onClick={() => {
-          onAudio();
-          setHigh();
+          playHigh();
         }}
       >
         蚊忌避
