@@ -22,31 +22,6 @@ const Freq = {
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioContext = new AudioContext();
 
-const createSound = (func: any, duration: any) => {
-  const sampleRate = audioContext.sampleRate; // サンプリングレート
-  const dt = 1 / sampleRate; // 時間刻み
-  const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate);
-  const data = buffer.getChannelData(0); // バッファ配列の生成
-  for (let i = 0; i < data.length; i++) {
-    data[i] = func(dt * i);
-  }
-  return buffer;
-};
-
-const source = audioContext.createBufferSource();
-
-const playSound = (buffer: any) => {
-  source.buffer = buffer;
-
-  // Destination
-  source.connect(audioContext.destination);
-
-  // Sourceの再生
-  source.start(0);
-};
-
-const analyser = audioContext.createAnalyser();
-
 const carrier = audioContext.createOscillator();
 carrier.type = 'sine';
 carrier.frequency.value = 220;
