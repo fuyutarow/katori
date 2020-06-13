@@ -43,14 +43,8 @@ const Counter: React.FC = () => {
   const [firstTapHigh, setFirstTapHigh] = useState(true);
   const [audio, setAudio] = useState<OscillatorNode>(carrier);
 
-  const offAudio = () => {
-    carrier.disconnect();
-    oscillators.forEach(oscillator => {
-      oscillator.disconnect();
-    });
-  };
-
   const playLow = () => {
+    pauseHigh();
     const currentTime = audioContext.currentTime;
     if (firstTapLow) {
       oscillators.forEach(oscillator => {
@@ -59,12 +53,18 @@ const Counter: React.FC = () => {
       setFirstTapLow(false);
     }
     oscillators.forEach(oscillator => {
-      // oscillator.start(currentTime);
       oscillator.connect(audioContext.destination);
     });
   };
 
+  const pauseLow = () => {
+    oscillators.forEach(oscillator => {
+      oscillator.disconnect();
+    });
+  };
+
   const playHigh = () => {
+    pauseLow();
     carrier.frequency.value = Freq.High;
     if (firstTapHigh) {
       audio.start(0);
@@ -73,6 +73,10 @@ const Counter: React.FC = () => {
       setFirstTapHigh(false);
     }
     audio.connect(audioContext.destination);
+  };
+
+  const pauseHigh = () => {
+    carrier.disconnect();
   };
 
   return (
@@ -99,7 +103,8 @@ const Counter: React.FC = () => {
         variant="outlined"
         disableElevation
         onClick={() => {
-          offAudio();
+          pauseLow();
+          pauseHigh();
         }}
       >
         音停止
