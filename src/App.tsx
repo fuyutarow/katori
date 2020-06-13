@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-
 import {
   Container,
   Button,
 } from '@material-ui/core';
-
 import {
   TwitterShareButton,
   TwitterIcon,
 } from 'react-share';
 
+import { ga } from 'plugins/firebase';
 import './App.css';
-import { findAllInRenderedTree } from 'react-dom/test-utils';
 
 const Freq = {
   High: 15000,
@@ -147,7 +145,9 @@ const App = () => {
         <img src="/icons/512x512.png" className="App-logo" alt="logo" />
         <Counter />
       </div>
-      <a href="https://note.com/fmfmkun/n/n56b5f942800d" target="_blank">
+      <a href="https://note.com/fmfmkun/n/n56b5f942800d" target="_blank" onClick={e => {
+        ga.logEvent('click_burner');
+      }}>
         <img src="/burner.gif" className="burner" />
       </a>
     </div>
