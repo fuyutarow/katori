@@ -102,13 +102,6 @@ const TwitterShare = () => (
 );
 
 const App = () => {
-  const twitterShareURL = (): string => {
-    const baseURL = 'https://twitter.com/intent/tweet';
-    const hashtags = '蚊取り音泉';
-    const appURL = 'https://katori.vercel.app';
-    const related = 'sairilab';
-    return `${baseURL}?hashtags=${hashtags}&url=${appURL}&related=${related}`;
-  };
 
   return (
     <div className="App">
