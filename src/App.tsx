@@ -26,38 +26,51 @@ const carrier = audioContext.createOscillator();
 carrier.type = 'sine';
 carrier.frequency.value = 220;
 
+const freqs = [
+  462, 466, // ネッタイシマカ, ヒトスジシマカ
+  640, 963, // ヒトスジシマカ
+];
+
+const oscillators: Array<OscillatorNode> = freqs.map(freq => {
+  const oscillator = audioContext.createOscillator();
+  oscillator.type = 'sine';
+  oscillator.frequency.value = freq;
+  return oscillator;
+});
+
 const Counter: React.FC = () => {
-  const [firstTap, setFirstTap] = useState(true);
+  const [firstTapLow, setFirstTapLow] = useState(true);
+  const [firstTapHigh, setFirstTapHigh] = useState(true);
   const [audio, setAudio] = useState<OscillatorNode>(carrier);
 
   const offAudio = () => {
     carrier.disconnect();
+    oscillators.forEach(oscillator => {
+      oscillator.disconnect();
+    });
   };
 
   const playLow = () => {
-    const freqs = [
-      462, 466, // ネッタイシマカ, ヒトスジシマカ
-      640, 963, // ヒトスジシマカ
-    ];
-
     const currentTime = audioContext.currentTime;
-    freqs.forEach(freq => {
-      const oscillator = audioContext.createOscillator();
-      oscillator.type = 'sine';
-      oscillator.frequency.value = freq;
-      oscillator.start(currentTime);
+    if (firstTapLow) {
+      oscillators.forEach(oscillator => {
+        oscillator.start(currentTime);
+      });
+      setFirstTapLow(false);
+    }
+    oscillators.forEach(oscillator => {
+      // oscillator.start(currentTime);
       oscillator.connect(audioContext.destination);
     });
-
   };
 
   const playHigh = () => {
     carrier.frequency.value = Freq.High;
-    if (firstTap) {
+    if (firstTapHigh) {
       audio.start(0);
       audio.disconnect();
       setAudio(audio);
-      setFirstTap(false);
+      setFirstTapHigh(false);
     }
     audio.connect(audioContext.destination);
   };
