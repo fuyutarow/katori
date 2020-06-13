@@ -113,12 +113,12 @@ const App = () => {
   return (
     <div className="App">
       <div className="App-inner">
+        <Container component="main" maxWidth="xs">
+          <TwitterShare />
+        </Container>
         <img src="/icons/512x512.png" className="App-logo" alt="logo" />
         <Counter />
-      </div >
-      <Container component="main" maxWidth="xs">
-        <TwitterShare />
-      </Container>
+      </div>
       <img src="/burner.gif" className="burner" />
     </div>
   );
