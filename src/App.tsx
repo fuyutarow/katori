@@ -92,7 +92,7 @@ const Counter = () => {
 
 const TwitterShare = () => (
   <TwitterShareButton
-    url={'https://kataori.vercel.app'}
+    url={'https://katori.vercel.app'}
     // title='蚊取り音泉'
     hashtags={['蚊取り音泉']}
   >
