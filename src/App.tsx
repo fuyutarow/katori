@@ -91,6 +91,7 @@ const Counter: React.FC = () => {
         onClick={() => {
           playLow();
           setPlaying(Playing.Low);
+          ga.logEvent('switchPlaying', { status: 'low' });
         }}
         variant={playing === Playing.Low ? 'contained' : 'outlined'}
         disabled={playing === Playing.Low}
@@ -102,6 +103,7 @@ const Counter: React.FC = () => {
         onClick={() => {
           playHigh();
           setPlaying(Playing.High);
+          ga.logEvent('switchPlaying', { status: 'high' });
         }}
         variant={playing === Playing.High ? 'contained' : 'outlined'}
         disabled={playing === Playing.High}
@@ -114,6 +116,7 @@ const Counter: React.FC = () => {
           pauseLow();
           pauseHigh();
           setPlaying(Playing.None);
+          ga.logEvent('switchPlaying', { status: 'none' });
         }}
         variant="outlined"
       >
@@ -126,7 +129,6 @@ const Counter: React.FC = () => {
 const TwitterShare = () => (
   <TwitterShareButton
     url={'https://katori.vercel.app'}
-    // title='蚊取り音泉'
     hashtags={['蚊取り音泉']}
   >
     <TwitterIcon size={32} round={true} />
