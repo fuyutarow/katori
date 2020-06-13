@@ -1,37 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 
 import {
   Container,
   Button,
 } from '@material-ui/core';
 
+import {
+  TwitterShareButton,
+  TwitterIcon,
+} from 'react-share';
+
+import './App.css';
+import { findAllInRenderedTree } from 'react-dom/test-utils';
+
+// NOTE: for safari
+// @ts-ignore
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioContext = new AudioContext();
+
+const carrier = audioContext.createOscillator();
+carrier.type = 'sine';
+carrier.frequency.value = 220;
+
+const carrierGain = audioContext.createGain();
+carrierGain.gain.value = .6;
+
+carrier.connect(carrierGain);
+carrierGain.connect(audioContext.destination);
+
 const Counter = () => {
-  const audioContext = new AudioContext();
-  const carrier = audioContext.createOscillator();
-  carrier.type = 'sine';
-  carrier.frequency.value = 220;
 
-  const modulator = audioContext.createOscillator();
-  modulator.frequency.value = 1.0;
-
-  const modulatorGain = audioContext.createGain();
-  modulatorGain.gain.value = 50;
-
-  const carrierGain = audioContext.createGain();
-  carrierGain.gain.value = .6;
-
-  modulator.connect(modulatorGain);
-  modulatorGain.connect(carrier.detune);
-  carrier.connect(carrierGain);
-  carrierGain.connect(audioContext.destination);
-
-  carrier.start(0);
-  carrier.disconnect();
-  modulator.start(0);
+  const [firstTap, setFirstTap] = useState(true);
+  const [audio, setAudio] = useState<OscillatorNode>(carrier);
 
   const onAudio = () => {
-    carrier.connect(audioContext.destination);
+    if (firstTap) {
+      audio.start(0);
+      audio.disconnect();
+      setAudio(audio);
+      setFirstTap(false);
+    }
+    audio.connect(audioContext.destination);
   };
 
   const offAudio = () => {
@@ -56,7 +65,7 @@ const Counter = () => {
           setLow();
         }}
       >
-          蚊誘引
+        蚊誘引
       </Button>
       <Button
         variant="outlined"
@@ -66,7 +75,7 @@ const Counter = () => {
           setHigh();
         }}
       >
-          蚊忌避
+        蚊忌避
       </Button>
       <Button
         variant="outlined"
@@ -75,19 +84,37 @@ const Counter = () => {
           offAudio();
         }}
       >
-          音停止
+        音停止
       </Button>
     </div>
   );
 };
 
+const TwitterShare = () => (
+  <TwitterShareButton
+    url={'https://kataori.vercel.app'}
+    // title='蚊取り音泉'
+    hashtags={['蚊取り音泉']}
+  >
+    <TwitterIcon size={32} round={true} />
+  </TwitterShareButton>
+
+);
+
 const App = () => {
 
   return (
     <div className="App">
-      {/* <Container component="main" maxWidth="xs"> */}
-      <img src="/icons/512x512.png" className="App-logo" alt="logo" />
-      <Counter />
+      <div className="App-inner">
+        <Container component="main" maxWidth="xs">
+          <TwitterShare />
+        </Container>
+        <img src="/icons/512x512.png" className="App-logo" alt="logo" />
+        <Counter />
+      </div>
+      <a href="https://note.com/fmfmkun/n/n56b5f942800d" target="_blank">
+        <img src="/burner.gif" className="burner" />
+      </a>
     </div>
   );
 };
