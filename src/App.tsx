@@ -159,11 +159,22 @@ const Counter: React.FC = () => {
       `}>
         <Box m={2} pt={3}>
           <ThemeProvider theme={theme} >
-            <Typography>
+            <Typography align="center">
               {
-                (playing === Playing.High) ? '蚊やネズミが嫌う高周波の音波を発生させ虫除けします'
-                  : (playing === Playing.Low) ? '	羽音に固有の周波数を発生させることで蚊をおびき寄せて殺します'
-                    : '蚊を殺すためのアプリです'
+                (playing === Playing.High) ? (
+                  <>
+                    <div>蚊やネズミが嫌う高周波の音波を発生させ</div>
+                    <div>虫除けします</div>
+                  </>
+                )
+                  : (playing === Playing.Low) ? (
+                    <>
+                      <div>羽音に固有の周波数を発生させ</div>
+                      <div>蚊をおびき寄せて殺します</div>
+                    </>
+                  ) : (
+                    <div>蚊を殺すためのアプリです</div>
+                  )
               }
             </Typography>
           </ThemeProvider>
