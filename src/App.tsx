@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 
 import {
   Container,
   Button,
 } from '@material-ui/core';
+
+import {
+  TwitterShareButton,
+  TwitterIcon,
+} from 'react-share';
+
+import './App.css';
 
 const Counter = () => {
   const audioContext = new AudioContext();
@@ -56,7 +62,7 @@ const Counter = () => {
           setLow();
         }}
       >
-          蚊誘引
+        蚊誘引
       </Button>
       <Button
         variant="outlined"
@@ -66,7 +72,7 @@ const Counter = () => {
           setHigh();
         }}
       >
-          蚊忌避
+        蚊忌避
       </Button>
       <Button
         variant="outlined"
@@ -75,20 +81,40 @@ const Counter = () => {
           offAudio();
         }}
       >
-          音停止
+        音停止
       </Button>
     </div>
   );
 };
 
+const TwitterShare = () => (
+  <TwitterShareButton
+    url={'https://kataori.vercel.app'}
+    // title='蚊取り音泉'
+    hashtags={['蚊取り音泉']}
+  >
+    <TwitterIcon size={32} round={true} />
+  </TwitterShareButton>
+
+);
+
 const App = () => {
+  const twitterShareURL = (): string => {
+    const baseURL = 'https://twitter.com/intent/tweet';
+    const hashtags = '蚊取り音泉';
+    const appURL = 'https://katori.vercel.app';
+    const related = 'sairilab';
+    return `${baseURL}?hashtags=${hashtags}&url=${appURL}&related=${related}`;
+  };
 
   return (
     <div className="App">
       {/* <Container component="main" maxWidth="xs"> */}
       <img src="/icons/512x512.png" className="App-logo" alt="logo" />
       <Counter />
-    </div>
+      <TwitterShare />
+
+    </div >
   );
 };
 
