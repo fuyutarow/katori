@@ -3,7 +3,7 @@
 }
 
 .App-inner {
-  min-height: 90vh;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,7 +17,9 @@
 }
 
 .burner {
+  width: 100%;
   max-height: 10vh;
+  height: auto;
   display: block;
   margin-left: auto;
   margin-right: auto

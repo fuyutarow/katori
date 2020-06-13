@@ -11,37 +11,36 @@ import {
 } from 'react-share';
 
 import './App.css';
+import { findAllInRenderedTree } from 'react-dom/test-utils';
+
+// NOTE: for safari
+// @ts-ignore
+const AudioContext = window.AudioContext || window.webkitAudioContext;
+const audioContext = new AudioContext();
+
+const carrier = audioContext.createOscillator();
+carrier.type = 'sine';
+carrier.frequency.value = 220;
+
+const carrierGain = audioContext.createGain();
+carrierGain.gain.value = .6;
+
+carrier.connect(carrierGain);
+carrierGain.connect(audioContext.destination);
 
 const Counter = () => {
-  // NOTE: for safari
-  // @ts-ignore
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  const audioContext = new AudioContext();
 
-  const carrier = audioContext.createOscillator();
-  carrier.type = 'sine';
-  carrier.frequency.value = 220;
-
-  const modulator = audioContext.createOscillator();
-  modulator.frequency.value = 1.0;
-
-  const modulatorGain = audioContext.createGain();
-  modulatorGain.gain.value = 50;
-
-  const carrierGain = audioContext.createGain();
-  carrierGain.gain.value = .6;
-
-  modulator.connect(modulatorGain);
-  modulatorGain.connect(carrier.detune);
-  carrier.connect(carrierGain);
-  carrierGain.connect(audioContext.destination);
-
-  carrier.start(0);
-  carrier.disconnect();
-  modulator.start(0);
+  const [firstTap, setFirstTap] = useState(true);
+  const [audio, setAudio] = useState<OscillatorNode>(carrier);
 
   const onAudio = () => {
-    carrier.connect(audioContext.destination);
+    if (firstTap) {
+      audio.start(0);
+      audio.disconnect();
+      setAudio(audio);
+      setFirstTap(false);
+    }
+    audio.connect(audioContext.destination);
   };
 
   const offAudio = () => {
@@ -114,15 +113,13 @@ const App = () => {
   return (
     <div className="App">
       <div className="App-inner">
-        {/* <Container component="main" maxWidth="xs"> */}
         <img src="/icons/512x512.png" className="App-logo" alt="logo" />
         <Counter />
-        <TwitterShare />
       </div >
-      {/* <div className="burner"> */}
-      {/* <img src="/burner.gif" classNmae="burner"/> */}
-      <img src="/burner.gif" className="burner"/>
-      {/* </div> */}
+      <Container component="main" maxWidth="xs">
+        <TwitterShare />
+      </Container>
+      <img src="/burner.gif" className="burner" />
     </div>
   );
 };
