@@ -119,7 +119,9 @@ const App = () => {
         <img src="/icons/512x512.png" className="App-logo" alt="logo" />
         <Counter />
       </div>
-      <img src="/burner.gif" className="burner" />
+      <a href="https://note.com/fmfmkun/n/n56b5f942800d" target="_blank">
+        <img src="/burner.gif" className="burner" />
+      </a>
     </div>
   );
 };
