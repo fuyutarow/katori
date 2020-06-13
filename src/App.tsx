@@ -13,7 +13,11 @@ import {
 import './App.css';
 
 const Counter = () => {
+  // NOTE: for safari
+  // @ts-ignore
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
   const audioContext = new AudioContext();
+
   const carrier = audioContext.createOscillator();
   carrier.type = 'sine';
   carrier.frequency.value = 220;
