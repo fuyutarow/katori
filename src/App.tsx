@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Container,
+  Box,
   Button,
+  ThemeProvider,
+  Typography,
+  createMuiTheme,
 } from '@material-ui/core';
 import {
   TwitterShareButton,
   TwitterIcon,
 } from 'react-share';
+
+import { css } from 'emotion';
 
 import { ga } from 'plugins/firebase';
 import './App.css';
@@ -84,45 +90,86 @@ const Counter: React.FC = () => {
     carrier.disconnect();
   };
 
+  const theme = createMuiTheme({
+    typography: {
+      subtitle1: {
+        fontSize: 16,
+      },
+      body1: {
+        fontWeight: 600,
+      },
+      button: {
+        fontStyle: 'italic',
+      },
+    },
+  });
+
   return (
-    <div>
-      <Button
-        disableElevation
-        onClick={() => {
-          playLow();
-          setPlaying(Playing.Low);
-          ga.logEvent('switchPlaying', { status: 'low' });
-        }}
-        variant={playing === Playing.Low ? 'contained' : 'outlined'}
-        disabled={playing === Playing.Low}
-      >
-        蚊誘引
-      </Button>
-      <Button
-        disableElevation
-        onClick={() => {
-          playHigh();
-          setPlaying(Playing.High);
-          ga.logEvent('switchPlaying', { status: 'high' });
-        }}
-        variant={playing === Playing.High ? 'contained' : 'outlined'}
-        disabled={playing === Playing.High}
-      >
-        蚊忌避
-      </Button>
-      <Button
-        disableElevation
-        onClick={() => {
-          pauseLow();
-          pauseHigh();
-          setPlaying(Playing.None);
-          ga.logEvent('switchPlaying', { status: 'none' });
-        }}
-        variant="outlined"
-      >
-        音停止
-      </Button>
-    </div>
+    <>
+      <div>
+        <Button
+          disableElevation
+          onClick={() => {
+            playLow();
+            setPlaying(Playing.Low);
+            ga.logEvent('switchPlaying', { status: 'low' });
+          }}
+          variant={playing === Playing.Low ? 'contained' : 'outlined'}
+          disabled={playing === Playing.Low}
+          style={{ border: '2px solid' }}
+        >
+          <ThemeProvider theme={theme} >
+            <Typography>蚊誘引</Typography>
+          </ThemeProvider>
+        </Button>
+        <Button
+          disableElevation
+          onClick={() => {
+            playHigh();
+            setPlaying(Playing.High);
+            ga.logEvent('switchPlaying', { status: 'high' });
+          }}
+          variant={playing === Playing.High ? 'contained' : 'outlined'}
+          disabled={playing === Playing.High}
+          style={{ border: '2px solid' }}
+        >
+          <ThemeProvider theme={theme} >
+            <Typography>蚊忌避</Typography>
+          </ThemeProvider>
+        </Button>
+        <Button
+          disableElevation
+          onClick={() => {
+            pauseLow();
+            pauseHigh();
+            setPlaying(Playing.None);
+            ga.logEvent('switchPlaying', { status: 'none' });
+          }}
+          variant="outlined"
+          style={{ border: '2px solid' }}
+        >
+          <ThemeProvider theme={theme} >
+            <Typography>音停止</Typography>
+          </ThemeProvider>
+        </Button>
+      </div>
+      <div
+        className={css`
+        margin: '100px',
+      `}>
+        <Box m={2} pt={3}>
+          <ThemeProvider theme={theme} >
+            <Typography>
+              {
+                (playing === Playing.High) ? '蚊やネズミが嫌う高周波の音波を発生させ虫除けします'
+                  : (playing === Playing.Low) ? '	羽音に固有の周波数を発生させることで蚊をおびき寄せて殺します'
+                    : '蚊を殺すためのアプリです'
+              }
+            </Typography>
+          </ThemeProvider>
+        </ Box>
+      </div>
+    </>
   );
 };
 
