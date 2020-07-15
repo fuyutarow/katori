@@ -173,8 +173,8 @@ const Counter: React.FC = () => {
                       <div>蚊をおびき寄せて殺します</div>
                     </>
                   ) : (
-                    <div>蚊を殺すためのアプリです</div>
-                  )
+                      <div>蚊を殺すためのアプリです</div>
+                    )
               }
             </Typography>
           </ThemeProvider>
@@ -205,11 +205,22 @@ const App = () => {
         <img src="/icons/512x512.png" className="App-logo" alt="logo" />
         <Counter />
       </div>
-      <a href="https://note.com/fmfmkun/n/n56b5f942800d" target="_blank" onClick={e => {
-        ga.logEvent('click_burner');
+      <div style={{
+        textAlign: 'center',
       }}>
-        <img src="/burner.gif" className="burner" />
-      </a>
+        <iframe
+          {...{
+            title: 'fmfm',
+            width: 300,
+            height: 250,
+            // src: "https://adskita-8awodai5x.vercel.app/pubs/1d48c11c-f786-4bb0-a50f-32b0df68e4f0",
+            src: 'https://adskita-git-cors.fuyutarow.vercel.app/pubs/1d48c11c-f786-4bb0-a50f-32b0df68e4f0',
+          }}
+          style={{
+            borderWidth: 0,
+          }}
+        />
+      </div>
     </div>
   );
 };
