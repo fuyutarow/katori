@@ -208,20 +208,9 @@ const App = () => {
       <div style={{
         textAlign: 'center',
       }}>
-        <iframe
-          {...{
-            title: 'fmfm',
-            width: 300,
-            height: 250,
-            // src: "https://adskita-8awodai5x.vercel.app/pubs/1d48c11c-f786-4bb0-a50f-32b0df68e4f0",
-            src: 'https://adskita-git-cors.fuyutarow.vercel.app/pubs/1d48c11c-f786-4bb0-a50f-32b0df68e4f0',
-          }}
-          style={{
-            borderWidth: 0,
-          }}
-        />
-      </div>
-    </div>
+        <iframe width="300" height="250" style={{ borderWidth: 0 }} src="https://adskita-git-02020079.fuyutarow.vercel.app/spaces/katori.now.sh/pub?key=AcE7h9iFaNOLbHRnHySILdK90F42"></iframe>
+      </div >
+    </div >
   );
 };
 
